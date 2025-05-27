@@ -13,11 +13,10 @@ SMODS.Joker {
     atlas = "main",
     pos = {x=4, y=5},
     cost = 1,
-
+    no_mysterious = true,
     add_to_deck = function(self, card, from_debuff)
         card:set_eternal(true)
     end,
-
     remove_from_deck = function(self, card, from_debuff)
         simple_create("Joker", G.jokers, "j_valk_suckit")
     end
