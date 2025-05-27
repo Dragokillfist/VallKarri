@@ -89,10 +89,10 @@ SMODS.Joker {
 }
 
 local function op(lvl)
-    lvl = to_big(lvl)
-    if (lvl < to_big(5)) then
+    lvl = lvl
+    if lvl < 5 then
         return "+"
-    elseif (lvl < to_big(10)) then
+    elseif lvl < 0 then
         return "X"
     else
         return "^"
@@ -100,10 +100,10 @@ local function op(lvl)
 end
 
 local function strength(lvl)
-    lvl = to_big(lvl)
-    if (lvl < to_big(5)) then
+    lvl = lvl
+    if lvl < 5 then
         return lvl * 5
-    elseif (lvl < to_big(10)) then
+    elseif lvl < 10 then
         return lvl
     else
         return lvl / 2
@@ -112,18 +112,16 @@ end
 
 local function level(xp)
     local start = to_big(10)
-    local curlevel = to_big(0)
-    while (to_big(xp) > start) do
+    local curlevel = 0
+    while to_big(xp) > to_big(start) do
         curlevel = curlevel + 1
-        start = start:pow(to_big(1.15))
+        start = start:pow(1.15)
     end
 
-    return {level = lenient_bignum(curlevel), xpreq = start}
+    return {level = curlevel, xpreq = start}
 end
 
--- SMODS.Joker {
-disabledjoker = {
-    -- this joker is not worth my time. please shoot me
+SMODS.Joker {
     key = "ovilidoth",
     loc_txt = {
         name = "Ovilidoth",
@@ -137,12 +135,12 @@ disabledjoker = {
 
         }
     },
-    config = { extra = { xp = to_big(1), } },
+    config = { extra = { xp = 1, } },
     loc_vars = function(self, info_queue, card)
 
         local stats = level(card.ability.extra.xp)
 
-        return {vars = {number_format(card.ability.extra.xp), number_format(stats.xpreq), number_format(stats.level), op(stats.level) .. number_format(strength(stats.level))}}
+        return {vars = {card.ability.extra.xp, stats.xpreq, stats.level, op(stats.level) .. strength(stats.level)}}
     end,
     rarity = 3,
     atlas = "main",
@@ -151,9 +149,8 @@ disabledjoker = {
     cost = 8,
 
     calculate = function(self, card, context)
-        -- please fucking kill me
         if (context.joker_main) then
-            local lvl = level(card.ability.extra.xp).level
+            local lvl = level(card.ability.extra.xp).level or level(to_big(card.ability.extra.xp)).level
 
             local operator = op(lvl)
             local str = strength(lvl)

@@ -161,6 +161,7 @@ SMODS.Rarity {
 	end,
 }
 
+Cryptid.mod_whitelist["Vall-karri"] = true
 
 
 assert(SMODS.load_file("Items/helpers.lua"))()
